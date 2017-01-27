@@ -1232,6 +1232,7 @@ def copy_os_good():
     args.versionurl = "vtest"
     args.format = "formattest"
     args.statedir = "/statetest"
+    args.cert_file = None
     swupd_cmd = "swupd verify --install --path=/ --manifest=0 "              \
                 "--contenturl=ctest --versionurl=vtest --format=formattest " \
                 "--statedir=/statetest"
@@ -1239,6 +1240,39 @@ def copy_os_good():
                 os.getenv("https_proxy"),
                 True]
     ister.copy_os(args, {"Version": 0, "DestinationType": ""}, "/")
+    ister.add_bundles = backup_add_bundles
+    shutil.which = backup_which
+    commands_compare_helper(commands)
+
+
+@run_command_wrapper
+def copy_os_cert_good():
+    """Check installer command with cert present"""
+    backup_add_bundles = ister.add_bundles
+    ister.add_bundles = lambda x, y: None
+    backup_which = shutil.which
+    shutil.which = lambda x: False
+
+    def args():
+        """args empty object"""
+        None
+    args.contenturl = "ctest"
+    args.versionurl = "vtest"
+    args.format = "formattest"
+    args.statedir = "/statetest"
+    args.cert_file = "/certtest"
+    swupd_cmd = "swupd verify --install --path=/ --manifest=0 "              \
+                "--contenturl=ctest --versionurl=vtest --format=formattest " \
+                "--statedir=/statetest -C /certtest"
+    commands = [swupd_cmd,
+                "https://to.clearlinux.org",
+                True]
+    template = {
+        "Version": 0,
+        "DestinationType": "",
+        "HTTPSProxy": "https://to.clearlinux.org"
+    }
+    ister.copy_os(args, template, "/")
     ister.add_bundles = backup_add_bundles
     shutil.which = backup_which
     commands_compare_helper(commands)
@@ -1259,6 +1293,7 @@ def copy_os_proxy_good():
     args.versionurl = "vtest"
     args.format = "formattest"
     args.statedir = "/statetest"
+    args.cert_file = None
     swupd_cmd = "swupd verify --install --path=/ --manifest=0 "              \
                 "--contenturl=ctest --versionurl=vtest --format=formattest " \
                 "--statedir=/statetest"
@@ -1294,6 +1329,7 @@ def copy_os_format_good():
     args.versionurl = "vtest"
     args.format = None
     args.statedir = "/statetest"
+    args.cert_file = None
     swupd_cmd = "swupd verify --install --path=/ --manifest=0 "        \
                 "--contenturl=ctest --versionurl=vtest --format=test " \
                 "--statedir=/statetest"
@@ -1323,6 +1359,7 @@ def copy_os_which_good():
     args.versionurl = "vtest"
     args.format = "formattest"
     args.statedir = "/statetest"
+    args.cert_file = None
     swupd_cmd = "swupd verify --install --path=/ --manifest=0 "              \
                 "--contenturl=ctest --versionurl=vtest --format=formattest " \
                 "--statedir=/statetest"
@@ -1353,6 +1390,7 @@ def copy_os_physical_good():
     args.versionurl = "vtest"
     args.format = "formattest"
     args.statedir = "/statetest"
+    args.cert_file = None
     swupd_cmd = "swupd verify --install --path=/ --manifest=0 "              \
                 "--contenturl=ctest --versionurl=vtest --format=formattest " \
                 "--statedir=/statetest"
@@ -4701,6 +4739,7 @@ if __name__ == '__main__':
         get_current_format_good,
         set_hostname_good,
         copy_os_good,
+        copy_os_cert_good,
         copy_os_proxy_good,
         copy_os_format_good,
         copy_os_which_good,
