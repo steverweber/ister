@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """Linux installation template system"""
 
-#
+#x
 # This file is part of ister.
 #
 # Copyright (C) 2014 Intel Corporation
