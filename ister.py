@@ -73,7 +73,7 @@ def run_command(cmd, raise_exception=True, log_output=True, environ=None,
     try:
         LOG.debug("Running command {0}".format(cmd))
         sys.stdout.flush()
-        proc = subprocess.Popen(cmd.split(" "),
+        proc = subprocess.Popen(['/bin/bash', '-c', cmd],
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE,
                                 env=environ)
